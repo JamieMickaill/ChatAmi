@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<head>
+  <title>ChatAmi!</title>
+  <link
+    rel="shortcut icon"
+    href="{% static 'cat.png' %}"
+  />
+  <link rel="stylesheet" href="{% static 'main.css' %}" />
+</head>
+
+<body>
+  <img src="{% static 'cat.png' %}" class="icon" />
+  <h3>Let's Chat!</h3>
+  <form action="{% url 'polls:index'  %}" method="post" id="basicform">
+    {% csrf_token %}
+    {{ form.prompt }}
+    <button type="submit" >Discutons</button>
+  </form>
+
+  <div>
+    <p class="result">
+    </p>
+  </div>
+
+  <script src="{% static 'jquery-3.5.1.min.js' %}"></script>
+  <script src="{% static 'custom.js' %}"></script>
+</body>
