@@ -13,8 +13,8 @@ from django.conf import settings
 # --------------------------------------------------------------
 # App imports
 # --------------------------------------------------------------
-from .forms import AnimalForm
-from .models import Choice, Question, ChatMessage
+from .forms import ChatForm
+from .models import ChatMessage
 
 
 # --------------------------------------------------------------
@@ -43,12 +43,10 @@ class IndexView(generic.FormView):
     """
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
-    form_class = AnimalForm
+    form_class = ChatForm
     success_url = "/"
 
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+
         
     def generate_prompt(self, userInput, assistantFlag):
         if assistantFlag:
@@ -85,7 +83,7 @@ class IndexView(generic.FormView):
     def post(self, request,*args, **kwargs):
         print("hi")
         data = {'result': 'Error', 'message': "Something went wrong, please try again", "redirect": False, "data":None}
-        form = AnimalForm(request.POST)
+        form = ChatForm(request.POST)
         messages=self.get_messages()
 
         if form.is_valid():
@@ -121,15 +119,6 @@ class IndexView(generic.FormView):
             return JsonResponse(data, status=400)
 
 
-
-class DetailView(generic.DetailView):
-    model = Question
-    template_name = 'polls/detail.html'
-
-
-class ResultsView(generic.DetailView):
-    model = Question
-    template_name = 'polls/results.html'
 
 
 # def index(request):

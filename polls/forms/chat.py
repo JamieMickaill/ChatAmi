@@ -4,7 +4,7 @@
 from django import forms
 
 
-class AnimalForm(forms.Form):
+class ChatForm(forms.Form):
     '''
     Basic form for our animal name suggestion form
     '''

@@ -2,8 +2,8 @@
 # App imports
 # --------------------------------------------------------------
 
-from polls.forms.animal import AnimalForm
+from polls.forms.chat import ChatForm
 
 __all__ = [
-    AnimalForm
+    ChatForm
 ]
