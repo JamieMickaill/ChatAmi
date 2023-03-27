@@ -14,6 +14,48 @@ function getSubmitButton(form){
     return form.find(":submit")
 }
 
+// New code
+const chatHistory = document.querySelector('.chat-history');
+const messageInput = document.querySelector('#message-input');
+const sendButton = document.querySelector('#send-button');
+
+sendButton.addEventListener('click', (event) => {
+  event.preventDefault();
+  sendMessage();
+});
+
+function sendMessage() {
+  const message = messageInput.value;
+  appendMessage('user', message);
+
+  fetch(`/chatbot/message/?message=${message}`)
+    .then(response => response.json())
+    .then(data => {
+      const responseMessage = data.message;
+      appendMessage('bot', responseMessage);
+    });
+
+  messageInput.value = '';
+}
+
+function appendMessage(sender, message) {
+  const messageContainer = document.createElement('div');
+  const messageElement = document.createElement('p');
+
+  messageElement.innerText = message;
+
+  if (sender === 'user') {
+    messageContainer.classList.add('user-message');
+  } else if (sender === 'bot') {
+    messageContainer.classList.add('bot-message');
+  }
+
+  messageContainer.appendChild(messageElement);
+  chatHistory.appendChild(messageContainer);
+  chatHistory.scrollTop = chatHistory.scrollHeight;
+}
+
+
 
 var DemoFunctions = function(){
 	

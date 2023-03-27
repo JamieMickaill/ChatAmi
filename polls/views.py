@@ -2,7 +2,7 @@
 # Django imports
 # --------------------------------------------------------------
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.http import JsonResponse
@@ -78,7 +78,7 @@ class IndexView(generic.FormView):
     #         'messages': messages
     #     }
     #     return render(request, 'chat.html', context)
-        
+            
     @method_decorator(ajax_required)
     def post(self, request,*args, **kwargs):
         print("hi")
@@ -118,6 +118,46 @@ class IndexView(generic.FormView):
             data["message"] = FormErrors(form)
             return JsonResponse(data, status=400)
 
+
+
+    def handle_message(request):
+        print("hi")
+        data = {'result': 'Error', 'message': "Something went wrong, please try again", "redirect": False, "data":None}
+        print(request)
+        form = ChatForm(request.POST)
+        messages=get_messages()
+
+        if form.is_valid():
+
+            prompt = form.cleaned_data.get("prompt")
+            self.update_messages("user",prompt)
+            print(self.get_messages())
+
+            response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=self.get_messages())
+
+            print(response)
+            responseText= response.choices[0].message.content
+                    
+            data.update({
+                'result': "Success",
+                'message': "ChatGPT has responded",
+                'data': responseText
+            })
+
+            # print(responseText)
+            self.update_messages("assistant",responseText)
+
+            messages = ChatMessage.objects.all()
+            context = {
+                'messages': messages
+            }
+            # messages.append()
+            return JsonResponse({'message': data})
+        else:
+            data["message"] = FormErrors(form)
+            return JsonResponse(data, status=400)
 
 
 
